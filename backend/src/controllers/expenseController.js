@@ -43,8 +43,13 @@ exports.addExpense = async (req, res) => {
     // Validate if new expense exceeds remaining budget
     if (amount > remainingBudget) {
       console.log('Expense exceeds budget:', { amount, remainingBudget });
-      return res.status(400).json({ message: "Expense exceeds remaining budget. You are adding an expense over your budget." });
+      return res.status(400).json({
+        message: "Expense exceeds remaining budget. You are adding an expense over your budget.",
+        remainingBudget,
+        amount,
+      });
     }
+
 
     const today = new Date().toISOString().split('T')[0];
 

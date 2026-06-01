@@ -66,17 +66,27 @@ const Expense = () => {
       if (editingId) {
         await axios.put(
           `http://localhost:5000/api/expenses/${editingId}`,
-          { amount: parseFloat(amount), category, description },
+          {
+            amount: Number.parseFloat(String(amount).trim()),
+            category: String(category).trim(),
+            description: description?.trim?.() ?? description,
+          },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+
         alert("Expense updated successfully!");
         setEditingId(null);
       } else {
         await axios.post(
           "http://localhost:5000/api/expenses/add",
-          { amount: parseFloat(amount), category, description },
+          {
+            amount: Number.parseFloat(String(amount).trim()),
+            category: String(category).trim(),
+            description: description?.trim?.() ?? description,
+          },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+
         alert("Expense added successfully!");
       }
 
@@ -93,7 +103,14 @@ const Expense = () => {
     } catch (err) {
       console.error(err);
       const errorMessage = err.response?.data?.message || "Error processing expense";
+      // Show backend message (budget/validation/auth) in a readable way
+      console.error("Expense API failed:", {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: errorMessage,
+      });
       alert(errorMessage);
+
     } finally {
       setLoading(false);
     }
