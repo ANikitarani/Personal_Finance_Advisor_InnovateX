@@ -25,13 +25,19 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/salaries", salaryRoutes);
 
 // MongoDB connection
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+const mongoUri = process.env.MONGO_URI;
+if (!mongoUri) {
+  console.warn("[mongo] MONGO_URI not set. Skipping MongoDB connection.");
+} else {
+  mongoose
+    .connect(mongoUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => console.log("✅ MongoDB connected"))
+    .catch((err) => console.error("❌ MongoDB connection error:", err));
+}
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

@@ -25,9 +25,14 @@ app.use("/api/training", require("./routes/trainingRoutes"));
 
 
 // DB Connection
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
+const mongoUri = process.env.MONGO_URI;
+if (!mongoUri) {
+  console.warn("[mongo] MONGO_URI not set. Skipping MongoDB connection.");
+} else {
+  mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.log(err));
+}
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
